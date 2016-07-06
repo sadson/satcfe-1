@@ -2016,9 +2016,6 @@ class DescAcrEntr(Entidade):
                 'vAcresSubtot': {
                         'type': 'decimal',
                         'required': False},
-                'vCFeLei12741': {
-                        'type': 'decimal',
-                        'required': False},
             }, **kwargs)
 
 
@@ -2032,10 +2029,6 @@ class DescAcrEntr(Entidade):
         if hasattr(self, 'vAcresSubtot'):
             ET.SubElement(grupo, 'vAcresSubtot').text = \
                     str(self.vAcresSubtot)
-
-        if hasattr(self, 'vCFeLei12741'):
-            ET.SubElement(grupo, 'vCFeLei12741').text = \
-                    str(self.vCFeLei12741)
 
         return grupo
 
@@ -2155,13 +2148,15 @@ class CFeVenda(Entidade):
 
     def __init__(self, emitente=None, destinatario=None, entrega=None,
             detalhamentos=[], descontos_acrescimos_subtotal=None,
-            pagamentos=[], informacoes_adicionais=None, **kwargs):
+            pagamentos=[], informacoes_adicionais=None,
+            vCFeLei12741=None, **kwargs):
 
         self._emitente = emitente
         self._destinatario = destinatario
         self._entrega = entrega
         self._detalhamentos = detalhamentos
         self._descontos_acrescimos_subtotal = descontos_acrescimos_subtotal
+        self._vCFeLei12741 = vCFeLei12741
         self._pagamentos = pagamentos
         self._informacoes_adicionais = informacoes_adicionais
 
@@ -2182,6 +2177,9 @@ class CFeVenda(Entidade):
                                 'type': 'integer',
                                 'required': True,
                                 'min': 0, 'max': 999},
+                        'vCFeLei12741': {
+                                'type': 'decimal',
+                                'required': False},
                     }, **kwargs)
 
 
@@ -2218,6 +2216,12 @@ class CFeVenda(Entidade):
         """
         return self._descontos_acrescimos_subtotal
 
+    @property
+    def vCFeLei12741(self):
+        """Valor referente ao total dos impostos (:class:`DescAcrEntr`)
+        ou ``None``.
+        """
+        return self._vCFeLei12741
 
     @property
     def pagamentos(self):
@@ -2264,6 +2268,9 @@ class CFeVenda(Entidade):
             infCFe.append(det._xml(nItem=n+1))
 
         total = ET.SubElement(infCFe, 'total')
+
+        if self.vCFeLei12741:
+            ET.SubElement(total, 'vCFeLei12741').text = str(self.vCFeLei12741)
 
         if self.descontos_acrescimos_subtotal is not None:
             total.append(self.descontos_acrescimos_subtotal._xml())
