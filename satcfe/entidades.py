@@ -216,7 +216,7 @@ Pagamento:
 import re
 import xml.etree.ElementTree as ET
 
-from pybrasil.valor.decimal import Decimal as D
+from pybrasil.valor.decimal import Decimal
 import cerberus
 
 from unidecode import unidecode
