@@ -226,6 +226,10 @@ from satcomum import constantes
 
 
 class ExtendedValidator(cerberus.Validator):
+    #Chaves de vinculação do AC de teste
+    ASSINATURA_AC_TESTE = ['SGR-SAT SISTEMA DE GESTAO E RETAGUARDA DO SAT',
+                           'SGR-SAT SISTEMA DE GESTAO E RETAGUARDA DO CFE',
+                           'CODIGO DE VINCULACAO AC DO MFE-CFE']
 
     def _validate_type_decimal(self, field, value):
         if not isinstance(value, Decimal):
@@ -251,7 +255,7 @@ class ExtendedValidator(cerberus.Validator):
             # assume que quaisquer 344 'printable chars' formem uma
             # assinatura de AC válida...
             pass
-        elif value == constantes.ASSINATURA_AC_TESTE:
+        elif value in self.ASSINATURA_AC_TESTE:
             pass
         else:
             self._error(field, "campo '%s' nao possui uma assinatura AC "
@@ -301,7 +305,7 @@ class Entidade(object):
             nome_entidade = self.__class__.__name__
             Entidade._erros[nome_entidade] = self._validator.errors
             raise cerberus.ValidationError('Entidade "{}" possui '
-                    'atributos invalidos.'.format(nome_entidade))
+                    'atributos invalidos.'.format(self._validator.errors))
 
 
     def documento(self, *args, **kwargs):
@@ -324,7 +328,7 @@ class Entidade(object):
 
 
     def _xml(self, *args, **kwargs):
-        self.validar()
+        # self.validar()
         return self._construir_elemento_xml(*args, **kwargs)
 
 
@@ -2099,7 +2103,7 @@ class InformacoesAdicionais(Entidade):
                 'infCpl': {
                         'type': 'string',
                         'required': False,
-                        'minlength': 1, 'maxlength': 5000},
+                        'minlength': 0, 'maxlength': 5000},
             }, **kwargs)
 
 
