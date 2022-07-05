@@ -19,7 +19,7 @@
 
 import logging
 
-__version__ = '0.0.9'
+__version__ = '0.0.9-mfe'
 
 logging.getLogger('satcfe').addHandler(logging.NullHandler())
 
